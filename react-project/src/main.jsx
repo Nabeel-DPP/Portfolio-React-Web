@@ -5,10 +5,12 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import App from "./components/home/App";
-import Portfolio from "./components/portfolio/Portfolio";
+import Portfolio from './components/portfolio/Portfolio';
 import Contact from "./components/contact/Contact";
 import About from "./components/about/About";
 import Layout from "./components/layout/Layout";
+// import Weather from './components/Project/Weather';
+import Weather from './components/task/Weather';
 
 const router = createBrowserRouter([
   {
@@ -31,6 +33,10 @@ const router = createBrowserRouter([
         path: "/about",
         element: <About />
       },
+      {
+        path: "/task",
+        element: <Weather/>
+      },
     ],
   },
 ]);
@@ -44,14 +50,3 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
 
 
-
-// import React from 'react'
-// import ReactDOM from 'react-dom/client'
-// import App from './components/home/App'
-
-
-// ReactDOM.createRoot(document.getElementById('root')).render(
-//   <React.StrictMode>
-//     <App/>
-//   </React.StrictMode>,
-// )

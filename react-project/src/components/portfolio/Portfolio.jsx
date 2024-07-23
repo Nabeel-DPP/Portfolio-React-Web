@@ -6,7 +6,7 @@ function Portfolio()
         <section class="page-section portfolio" id="portfolio">
             <div class="container">
                
-                <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Portfolio</h2>
+                <h2 class="page-section-heading text-center text-uppercase text-secondary mt-5">Portfolio</h2>
                 
                 <div class="divider-custom">
                     <div class="divider-custom-line"></div>

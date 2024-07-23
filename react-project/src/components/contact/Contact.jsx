@@ -3,7 +3,7 @@ function Contact()
 {
     return(
         
-         <section className="page-section" id="contact">
+         <section className="page-section mt-5" id="contact">
             <div className="container">
                 
                 <h2 className="page-section-heading text-center text-uppercase text-secondary mb-0">Contact Me</h2>
