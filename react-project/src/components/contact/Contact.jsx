@@ -10,7 +10,7 @@ function Contact()
                 
                 <div className="divider-custom">
                     <div className="divider-custom-line"></div>
-                    <div className="divider-custom-icon"><i class="fas fa-star"></i></div>
+                    <div className="divider-custom-icon"><i className="fas fa-star"></i></div>
                     <div className="divider-custom-line"></div>
                 </div>
                 <div className="row justify-content-center">
@@ -31,7 +31,7 @@ function Contact()
                                 <div className="invalid-feedback" data-sb-feedback="email:email">Email is not valid.</div>
                             </div>
                             
-                            <div class="form-floating mb-3">
+                            <div className="form-floating mb-3">
                                 <input className="form-control" id="phone" type="tel" placeholder="(123) 456-7890" data-sb-validations="required" />
                                 <label htmlfor="phone">Phone number</label>
                                 <div className="invalid-feedback" data-sb-feedback="phone:required">A phone number is required.</div>
@@ -48,7 +48,7 @@ function Contact()
                                 </div>
                             </div>
                            
-                            <div className="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
+                            <div className="d-none" id="submitErrorMessage"><div className="text-center text-danger mb-3">Error sending message!</div></div>
                             
                             <button className="btn btn-primary btn-xl " id="submitButton" type="submit">Send</button>
                         </form>
