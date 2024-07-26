@@ -13,4 +13,30 @@
   .app-searchbox-container {
     width: 50vw;
   }
+  .cords
+  {
+    display: flex;
+    margin-top: 50px;
+    /* justify-content: space-around */
+    /* margin-right: 25px; */
+    /* background-color: blueviolet; */
+    
+  }
+  .cordsVal
+  { 
+    display: flex;
+    justify-content:space-around;
+    /* background-color: aqua; */
+    width: 60%;
+    
+    
+  }
+  
+
+  .weatherCard
+  {
+    margin-left: 40px;
+    
+    margin-bottom: 20px;
+  }
   

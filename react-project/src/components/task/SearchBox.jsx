@@ -22,6 +22,8 @@ export default function SearchBox(props) {
   const [listPlace, setListPlace] = useState([]);
   const [selectedPlace, setSelectedPlace] = useState(null);
 
+
+
   useEffect(() => {
     if (searchText.length > 2 && !selectedPlace) {
       const params = {
@@ -38,13 +40,18 @@ export default function SearchBox(props) {
       fetch(`${NOMINATIM_BASE_URL}${queryString}`, requestOptions)
         .then((response) => response.text())
         .then((result) => {
-          console.log(JSON.parse(result));
+          console.log("check", requestOptions);
+          console.log("check1",JSON.parse(result));
           setListPlace(JSON.parse(result));
         })
         .catch((err) => console.log("err: ", err));
     } else {
       setListPlace([]);
     }
+
+    console.log("set3",searchText);
+    console.log("set2",selectPosition);
+    console.log("set1",selectedPlace?.lat);
   }, [searchText, selectedPlace]);
 
   return (

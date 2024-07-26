@@ -15,10 +15,13 @@ const position = [51.505, -0.09];
 
 function ResetCenterView(props) {
   const { selectPosition } = props;
+  console.log("position",selectPosition);
   const map = useMap();
 
   useEffect(() => {
     if (selectPosition) {
+      console.log("abc",selectPosition.lat)
+      console.log("abc",selectPosition.lon)
       map.flyTo(
         L.latLng(selectPosition?.lat, selectPosition?.lon),
         map.getZoom(),
