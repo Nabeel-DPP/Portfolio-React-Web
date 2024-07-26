@@ -10941,6 +10941,7 @@ html {
     color: #fff;
     background: #1abc9c;
   }
+  
   #mainNav.navbar-shrink {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
@@ -11058,4 +11059,9 @@ html {
 .locSearch
 {
   margin-top: 100px;
+}
+
+.pic
+{
+  border-radius: 100%;
 }
