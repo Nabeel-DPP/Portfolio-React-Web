@@ -11,7 +11,7 @@ function App() {
     <header className="masthead bg-primary text-white text-center">
             <div className="container d-flex align-items-center flex-column">
                 
-                <img className="masthead-avatar mb-5" src="/public/avataaars.svg" alt="Avatar Pic" />
+                <img className="masthead-avatar pic mb-3" src="Nabeel.jpg" alt="Avatar Pic" />
                 
                 <h1 className="masthead-heading text-uppercase mb-0">Nabeel Hussain</h1>
                 
