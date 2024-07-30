@@ -88,19 +88,21 @@ export default function SearchBox(props) {
             {listPlace.map((item) => {
               return (
                 <div key={item?.place_id}>
-                  <ListItem onClick={() => {
+                  <ListItem  onClick={() => {
                       setSearchText(item.display_name);
                       setSelectedPlace(item);
                       setListPlace([]);  // Clear the list after selection
                     }}
-                  >
+                  >  
+                  
                     <ListItemIcon className="search-box-list-item-icon">
                       <img
                         src="/src/components/task/marker.png"
                         alt="Placeholder"
                       />
                     </ListItemIcon>
-                    <ListItemText primary={item?.display_name} />
+                    <ListItemText  primary={item?.display_name} />
+                    
                   </ListItem>
                   <Divider />
                 </div>

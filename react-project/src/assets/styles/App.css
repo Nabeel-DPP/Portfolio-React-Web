@@ -11065,3 +11065,8 @@ html {
 {
   border-radius: 100%;
 }
+.logo
+{
+  width: 150px;
+  height: 40px;
+}
