@@ -11,8 +11,7 @@ import About from "./components/about/About";
 import Layout from "./components/layout/Layout";
 import Map from './components/map/Map';
 
-// import Weather from './components/Project/Weather';
-import Weather from './components/task/Weather';
+
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
@@ -41,10 +40,6 @@ const router = createBrowserRouter([
       },
       {
         path: "/weather",
-        element: <Weather/>
-      },
-      {
-        path: "/map",
         element: <Map/>
       },
     ],
