@@ -60,6 +60,7 @@ function Temp({ markerPositions, setMarkerPositions, updateMarkerDescription }) 
     setWeatherData(prevData => {
       const newData = { ...prevData };
       delete newData[index];
+      delete popUp[index];
       return newData;
     });
   };
