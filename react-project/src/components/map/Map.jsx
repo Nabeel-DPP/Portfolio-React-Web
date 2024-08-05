@@ -9,6 +9,7 @@ import Temp from './Temp';
 import { setSearchQuery, setSelectedPosition, setSuggestions, addMarkerPosition } from '../../redux/mapSlice';
 import "./Map.css";
 
+
 // Optional: Fix default icon issues for Leaflet
 import L, { latLng } from 'leaflet';
 delete L.Icon.Default.prototype._getIconUrl;
