@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import MapCenter from './MapCenter';
+import { useDispatch, useSelector } from 'react-redux';
+import Autosuggest from 'react-autosuggest';
 import axios from 'axios';
 import Temp from './Temp';
-import Autosuggest from 'react-autosuggest';
-import MapCenter from './MapCenter'; // Import the new MapCenter component
+import { setSearchQuery, setSelectedPosition, setSuggestions, addMarkerPosition } from '../../redux/mapSlice';
 import "./Map.css";
 
 // Optional: Fix default icon issues for Leaflet
-import L from 'leaflet';
+import L, { latLng } from 'leaflet';
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.4/images/marker-icon-2x.png',
@@ -16,53 +18,25 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.4/images/marker-shadow.png',
 });
 
-function ClickHandler({ addMarker }) {
+function ClickHandler() {
+  const dispatch = useDispatch();
   useMapEvents({
     click: async (e) => {
-      const { lat, lng } = e.latlng;
-      console.log('Map clicked at:', e.latlng);
-
-      // Fetch the city name using Geopify Geocoding API
+      const { lat, lng } = e.latlng
+      console.log("This is Click Result",lng);
       const apiKey = '6b8d47b612af42cb87b8d4eb9196c220';
-      const url = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&apiKey=${apiKey}`;
-
-      try {
-        const response = await axios.get(url);
-        
-        console.log(response.data.features);
-        const city = response.data.features[0].properties.city;
-        const country = response.data.features[0].properties.country;
-        console.log(city);
-        console.log(country);
-        const mapLocation = `${city}, ${country}`;
-        addMarker({ latlng: e.latlng, location: mapLocation, description: '' }); // Add description field
-      } catch (error) {
-        console.error('Error fetching location name:', error);
-        console.log('Error fetching location name');
-      }
+      const response = await axios.get(`https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&apiKey=${apiKey}`);
+      const location = `${response.data.features[0].properties.city}, ${response.data.features[0].properties.country}`;
+      console.log("Location by Click is ",location);
+      dispatch(addMarkerPosition({ latlng : {lat , lng}, location, description: '' }));
     }
   });
+  return null;
 }
 
 function Map() {
-  const [markerPositions, setMarkerPositions] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
-  const [selectedPosition, setSelectedPosition] = useState(null); // State for the selected position
-  
-
-  const addMarker = (marker) => {
-    setMarkerPositions(prevPositions => [...prevPositions, marker]);
-    setSelectedPosition(marker.latlng); // Update the selected position when a new marker is added
-  };
-
-  const updateMarkerDescription = (index, description) => {
-    setMarkerPositions(prevPositions => 
-      prevPositions.map((marker, i) => 
-        i === index ? { ...marker, description } : marker
-      )
-    );
-  };
+  const dispatch = useDispatch();
+  const { markerPositions, searchQuery, suggestions, selectedPosition } = useSelector(state => state.map);
 
   useEffect(() => {
     console.log('Marker Positions:', markerPositions);
@@ -70,85 +44,66 @@ function Map() {
 
   const handleSearch = async () => {
     const apiKey = '6b8d47b612af42cb87b8d4eb9196c220';
-    const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(searchQuery)}&apiKey=${apiKey}`;
-
-    try {
-      const response = await axios.get(url);
-      console.log(response.data.features[0]);
-      const result = response.data.features[0];
-      const lat = result.properties.lat;
-      const lon = result.properties.lon;
-
-      const city = result.properties.city;
-      const country = result.properties.country;
-      const mapLocation = `${city}, ${country}`;
-      console.log(city);
-      console.log(country);
-      console.log(lat);
-      console.log(lon);
-      addMarker({ latlng: { lat, lng: lon }, location: mapLocation, description: '' }); // Add description field
-    } catch (error) {
-      console.error('Error fetching geocode:', error);
-    }
+    const response = await axios.get(`https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(searchQuery)}&apiKey=${apiKey}`);
+    const result = response.data.features[0];
+    console.log(result);
+    
+    const lat = result.properties.lat;
+    const lng = result.properties.lon;
+    const city = result.properties.city;
+    const country = result.properties.country;
+    const mapLocation = `${city}, ${country}`;
+    dispatch(addMarkerPosition({ latlng: { lat, lng }, location: mapLocation, description: '' }));
   };
 
   const getSuggestions = async (value) => {
     const apiKey = '6b8d47b612af42cb87b8d4eb9196c220';
-    const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(value)}&apiKey=${apiKey}`;
-
-    try {
-      const response = await axios.get(url);
-      return response.data.features.map(feature => ({
-        name: feature.properties.formatted,
-        lat: feature.properties.lat,
-        lon: feature.properties.lon,
-        city: feature.properties.city,
-        country: feature.properties.country
-      }));
-    } catch (error) {
-      console.error('Error fetching suggestions:', error);
-      return [];
-    }
+    const response = await axios.get(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(value)}&apiKey=${apiKey}`);
+    return response.data.features.map(feature => ({
+      name: feature.properties.formatted,
+      lat: feature.properties.lat,
+      lon: feature.properties.lon,
+      city: feature.properties.city,
+      country: feature.properties.country,
+    }));
   };
 
   const onSuggestionsFetchRequested = async ({ value }) => {
     const suggestions = await getSuggestions(value);
-    setSuggestions(suggestions);
+    dispatch(setSuggestions(suggestions));
   };
 
   const onSuggestionsClearRequested = () => {
-    setSuggestions([]);
+    dispatch(setSuggestions([]));
   };
 
   const getSuggestionValue = (suggestion) => suggestion.name;
 
   const renderSuggestion = (suggestion) => (
-    <div>
-      {suggestion.name}
-    </div>
+    <div>{suggestion.name}</div>
   );
 
-  const onSuggestionSelected = (event, { suggestion }) => {
-    setSearchQuery(suggestion.name);
-  };
+  // const onSuggestionSelected = (event, { suggestion }) => {
+  //   dispatch(setSearchQuery(suggestion.name));
+  //   dispatch(addMarkerPosition({ latlng: { lat: suggestion.lat, lon: suggestion.lon }, location: suggestion.name, description: '' }));
+  // };
 
   const inputProps = {
     placeholder: "Search for a location",
     value: searchQuery,
-    onChange: (e, { newValue }) => setSearchQuery(newValue)
+    onChange: (e, { newValue }) => dispatch(setSearchQuery(newValue))
   };
 
   return (
     <div>
-      
-      <div className="search-bar ">
+      <div className="search-bar">
         <Autosuggest
           suggestions={suggestions}
           onSuggestionsFetchRequested={onSuggestionsFetchRequested}
           onSuggestionsClearRequested={onSuggestionsClearRequested}
           getSuggestionValue={getSuggestionValue}
           renderSuggestion={renderSuggestion}
-          onSuggestionSelected={onSuggestionSelected}
+          // onSuggestionSelected={onSuggestionSelected}
           inputProps={inputProps}
           theme={{
             container: 'autosuggest__container',
@@ -158,51 +113,29 @@ function Map() {
             suggestionHighlighted: 'autosuggest__suggestion--highlighted'
           }}
         />
-        <button onClick={handleSearch} style={{width:"300px"}}><b>Search</b></button>
+        <button onClick={handleSearch} style={{ width: "300px" }}><b>Search</b></button>
       </div>
-      
+
       <MapContainer className='mapContainer' center={[51.505, -0.09]} zoom={13} style={{ height: '80vh', width: '50%' }}>
-        <TileLayer className='mapImage'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <ClickHandler addMarker={addMarker} />
-        {selectedPosition && <MapCenter position={selectedPosition} />} {/* Use the MapCenter component to update the map view */}
+        <ClickHandler />
+        {selectedPosition && <MapCenter position={selectedPosition} />}
         {markerPositions.map((marker, index) => (
           <Marker key={index} position={marker.latlng}>
             <Popup>
               <div>
-                {/* <p>{marker.location}</p> */}
                 <p>{marker.description}</p>
               </div>
             </Popup>
           </Marker>
         ))}
       </MapContainer>
-      <Temp markerPositions={markerPositions} setMarkerPositions={setMarkerPositions} updateMarkerDescription={updateMarkerDescription} />
+      <Temp markerPositions={markerPositions} />
     </div>
   );
 }
 
 export default Map;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
